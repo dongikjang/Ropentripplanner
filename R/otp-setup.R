@@ -507,7 +507,7 @@ otp_checks <- function(otp = NULL,
 #' @family setup
 #' @export
 #'
-otp_check_java <- function(otp_version = 1.5) {
+otp_check_java <- function(otp_version = 2.5) {
   checkmate::assert_numeric(otp_version, lower = 1, upper = 2.999)
   # Check we have correct verrsion of Java
   java_version <- try(system2("java", "-version", stdout = TRUE, stderr = TRUE))
@@ -564,7 +564,7 @@ otp_check_java <- function(otp_version = 1.5) {
       return(FALSE)
     }
 
-    if (otp_version >= 2.2) {
+    if (otp_version >= 2.2 & otp_version <= 2.4) {
       if (java_version >= 1.8 & java_version < 1.9) {
         warning("You have OTP 2.2+ but the version of Java for OTP 1.x")
         return(FALSE)
@@ -584,6 +584,30 @@ otp_check_java <- function(otp_version = 1.5) {
       return(FALSE)
     }
 
+    if (otp_version >= 2.5) {
+      if (java_version >= 1.8 & java_version < 1.9) {
+        warning("You have OTP 2.5+ but the version of Java for OTP 1.x")
+        return(FALSE)
+      }
+
+      if (java_version == 11) {
+        warning("You have OTP 2.5+ but the version of Java for OTP 2.0 or 2.1")
+        return(FALSE)
+      }
+
+      if (java_version == 17) {
+        warning("You have OTP 2.5+ but the version of Java for OTP 2.4")
+        return(TRUE)
+      }
+
+      if (java_version == 21) {
+        message("You have the correct version of Java for OTP 2.5+")
+        return(TRUE)
+      }
+
+      warning("OTP 2.5+ requires Java version 21 you have version ", java_version)
+      return(FALSE)
+    }
     warning("OTP requires Java version 1.8 you have version ", java_version)
     return(FALSE)
   }
