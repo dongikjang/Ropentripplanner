@@ -242,7 +242,7 @@ otp_setup <- function(otp = NULL,
   }
 
   # Setup request
-  if (otp_version >= 2) {
+  if (otp_version >= 2 & otp_version >= 2.4) {
     text <- paste0(
       "java -Xmx", memory, "M"
     )
@@ -259,6 +259,20 @@ otp_setup <- function(otp = NULL,
       ' --securePort ', securePort
 
     )
+  } else if (otp_version == 2.5) {
+    text <- paste0(
+      "java -Xmx", memory, "M"
+    )
+
+    text <- paste0(
+      text, ' -jar "',
+      otp,
+      '" --load "',
+      dir,
+      "/graphs/",
+      router,
+      '"',
+      ' --port ', port )
   } else {
     text <- paste0(
       'java -Xmx', memory, 'M'
