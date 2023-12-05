@@ -57,9 +57,15 @@ parse_leg <- function(leg,
                       get_geometry = TRUE,
                       get_elevation = TRUE,
                       full_elevation = FALSE) {
+
   # split into parts
-  leg$from <- NULL
-  leg$to <- NULL
+  fromStop <- data.table::rbindlist(purrr::map(leg$from, parse_fromto), fill = TRUE)
+  toStop <- data.table::rbindlist(purrr::map(leg$to, parse_fromto), fill = TRUE)
+   
+  # leg$from <- NULL
+  # leg$to <- NULL
+  leg$from <- fromStop
+  leg$to <- toStop
 
   if (get_elevation | full_elevation) {
     elevation <- purrr::map(leg$steps, parse_elevation)
@@ -121,4 +127,27 @@ split_alternating <- function(x){
                     second = x[!odd],
                     check.names = FALSE,
                     check.rows = FALSE))
+}
+
+#' Parse stop data
+#'
+#'
+#' @param frm list - a step
+#' @family internal
+#' @noRd
+parse_fromto <- function (frm) {
+    if (is.null(frm)) {
+        return(NA)
+    }
+
+    if(is.null(frm$stopIndex)){
+        frm$stopIndex <- NA
+    }
+    if(is.null(frm$stopSequence)){
+        frm$stopSequence <- NA
+    }
+    
+    frms <- as.data.table(frm[c("name", "stopId", "stopIndex", "stopSequence")])
+    #setnames(frms, c("name", "stopId", "stopIndex", "stopSequence"), paste("From_", c("name", "stopId", "stopIndex", "stopSequence"), sep=""))
+    return(as.data.frame(frms))
 }
