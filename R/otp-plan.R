@@ -562,7 +562,7 @@ otp_json2sf <- function(itineraries, fp, tp,
 
   names(legs) <- seq_len(length(legs))
   legs <- legs[!is.na(legs)]
-  legs <- data.table::rbindlist(legs, fill = TRUE, idcol = "route_option", use.names=TRUE)
+  legs <- data.table::rbindlist(data.table(legs), fill = TRUE, idcol = "route_option", use.names=TRUE)
   names(legs) <- paste0("leg_",names(legs))
   names(legs)[names(legs) == "leg_route_option"] <- "route_option"
   names(legs)[names(legs) == "leg_geometry"] <- "geometry"

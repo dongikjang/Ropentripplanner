@@ -66,7 +66,7 @@ parse_leg <- function(leg,
   # leg$to <- NULL
   leg$from <- fromStop
   leg$to <- toStop
-
+  leg <- as.data.table(leg)
   if (get_elevation | full_elevation) {
     elevation <- purrr::map(leg$steps, parse_elevation)
   } else {
